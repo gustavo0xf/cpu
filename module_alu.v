@@ -1,4 +1,4 @@
-module alu (
+module module_alu(
     input             [2:0]  opcode,
     input signed      [15:0] opA,
     input signed      [15:0] opB,
