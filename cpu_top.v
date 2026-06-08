@@ -13,9 +13,7 @@ module cpu_top(
 
 );
 
-    // =========================
     // FIOS INTERNOS
-    // =========================
 
     wire [15:0] alu_result;
 
