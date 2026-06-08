@@ -1,6 +1,6 @@
 module cpu_top(
 
-    input CLOCK_50,
+    input clk,
     input [17:0] SW,
 
     input KEY0,      // ligar
