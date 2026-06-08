@@ -34,7 +34,7 @@ module cpu_top(
 
     control_unit CU (
 
-        .clk(CLOCK_50),
+        .clk(clk),
 
         .instruction(SW),
 
