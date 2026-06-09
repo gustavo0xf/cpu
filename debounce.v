@@ -12,13 +12,13 @@ module debounce (
 		btnSync <= sync; // sincroniza de fato
 	end
 	// estados
-	parameter init            = 2'b00; // 00
-	parameter debounce        = 2'b01; // 01
-	parameter waitRelease     = 2'b10; // 10
-	parameter sendInstruction = 2'b11; // 11
+	parameter init            = 0; // 00
+	parameter debounce        = 1; // 01
+	parameter waitRelease     = 2; // 10
+	parameter sendInstruction = 3; // 11
 	// estado atual e contador
 	reg [1:0]  state = init;
-	reg [32:0] counter = 0;
+	reg [32:0] counter;
 	reg [1:0]  state;
 	reg [32:0] counter;
 	// parte combinacional
