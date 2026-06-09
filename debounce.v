@@ -17,7 +17,7 @@ module debounce (
 	parameter waitRelease     = 2; // 10
 	parameter sendInstruction = 3; // 11
 	// estado atual e contador
-	reg [2:0]  state;
+	reg [1:0]  state;
 	reg [32:0] counter;
 	// parte combinacional
 	always @(*) begin
