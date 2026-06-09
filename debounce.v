@@ -3,7 +3,7 @@ module debounce (
 	output reg instructionPulse // sinal que habilita o envio da instrução
 );
 	// timeout de debounce
-	parameter TIMEOUT = 50000;
+	parameter TIMEOUT = 500000;
 	// o sinal do botão físico é assíncrono, portanto, precisamos sincronizá-lo com o clock
 	reg sync, btnSync;
 	
@@ -25,7 +25,7 @@ module debounce (
 	always @(*) begin
 		case (state)
 			init: begin
-				instructionPulse <= 0;
+				instructionPulse <= instructionPulse;
 			end
 			debounce: begin
 				instructionPulse <= instructionPulse;
@@ -34,7 +34,7 @@ module debounce (
 				instructionPulse <= instructionPulse;
 			end
 			sendInstruction: begin
-				instructionPulse <= 1;
+				instructionPulse <= ~instructionPulse;
 			end
 		endcase
 	end
