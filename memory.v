@@ -15,7 +15,7 @@ module memory (
 		// se for detectado um sinal de reset, zerar a memoria
 		if (rst) begin
 			for (i = 0; i < 16; i = i + 1) begin // analogo a um for dentro de um for, p/ leitura de matriz em C
-				ram[i] = 16'd0;
+				ram[i] <= 16'd0;
 			end
 		end
 		// write
