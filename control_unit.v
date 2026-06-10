@@ -122,7 +122,7 @@ module control_unit (
                         opcode   <= instruction[`OPCODE];
                         dst_reg  <= instruction[`DST_REG];
                         src_reg1 <= instruction[`IMM_SRC0];
-                        imm      <= signal_extension(instruction[`SGN], instruction[`IMM]);
+                        imm      <= sgnExt(instruction[`SGN], instruction[`IMM]);
                     end
                     else if (instruction[`OPCODE] == `ADD || instruction[`OPCODE] == `SUB) 
                     begin
@@ -135,7 +135,7 @@ module control_unit (
                     begin
                         opcode   <= instruction[`OPCODE];
                         dst_reg  <= instruction[`DST_REG];
-                        imm      <= signal_extension(instruction[`SGN], instruction[`IMM]);
+                        imm      <= sgnExt(instruction[`SGN], instruction[`IMM]);
                     end
                     else if (instruction[`OPCODE] == `CLEAR || instruction[`OPCODE] == `DISPLAY) 
                     begin
