@@ -87,7 +87,7 @@ module cpu_top(
 
     // LCD
 
-    lcd_controller_top LCD (
+    lcd_controller LCD (
 
         .clk(CLOCK_50),
 
