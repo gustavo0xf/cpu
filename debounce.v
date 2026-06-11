@@ -4,7 +4,10 @@ module debounce (
 );
     // timeout de debounce
     parameter TIMEOUT = 500000;
-    // o sinal do botão físico é assíncrono, portanto, precisamos sincronizá-lo com o clock
+    /* o sinal do botão físico é assíncrono, portanto, precisamos sincronizá-lo com o clock
+     * para evitar que o sinal do botao esteja instavel imediatamente antes e imediatamente depois 
+     * das bordas de subida e/ou descida do clock
+    */
     reg sync, btnSync;
     always @(posedge clk) begin
         sync    <= btn;  // recebe o sinal físico
