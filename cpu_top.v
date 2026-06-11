@@ -3,8 +3,8 @@ module cpu_top(
     input clk,
     input [17:0] SW,
 
-    input KEY0,      // ligar
-    input KEY1,      // enviar instrução
+    input KEY0,      // reset
+    input KEY1,      // executar instrução
 
     inout [7:0] LCD_DATA,
     output LCD_RS,
@@ -13,73 +13,88 @@ module cpu_top(
 
 );
 
-    // FIOS INTERNOS
+    // FIOS INTERNOS (Originais)
 
-    wire [15:0] alu_result;
+    wire [2:0] opcode;
+
+    wire [3:0] src1;
+    wire [3:0] src2;
+    wire [3:0] dst;
+
+    wire we;
 
     wire [15:0] reg_a;
     wire [15:0] reg_b;
 
-    wire [3:0] read_addr1;
-    wire [3:0] read_addr2;
-    wire [3:0] write_addr;
+    wire [15:0] alu_result;
 
-    wire [15:0] write_data;
+    // FIOS INTERNOS (Novos - Necessários para a nova arquitetura)
+    
+    wire instructionPulse;
+    wire signed [15:0] immediate;
+    wire clear_reg;
+    wire lcd_start;
 
-    wire write_enable;
+    // DEBOUNCE
 
-    wire [2:0] opcode;
+    debounce DB(
+        .clk(clk),
+        .btn(~KEY1),
+        .instructionPulse(instructionPulse)
+    );
 
-    // UNIDADE DE CONTROLE
+    // CONTROL UNIT
 
-    control_unit CU (
+    control_unit CU(
 
         .clk(clk),
-
-        .instruction(SW),
-
-        .send(KEY1),
+        .rst(~KEY0),
+        .instructionPulse(instructionPulse),
 
         .opcode(opcode),
+		  .instruction(SW),
 
-        .read_addr1(read_addr1),
-        .read_addr2(read_addr2),
+        .src1(src1),
+        .src2(src2),
+        .dst(dst),
 
-        .write_addr(write_addr),
-
-        .write_enable(write_enable)
+        .immediate(immediate),
+        .we(we),
+        .clear_reg(clear_reg),
+        .lcd_start(lcd_start)
 
     );
 
-    // BANCO DE REGISTRADORES
+    // MEMORY
 
-    memory MEM (
+    memory MEM(
 
-        .clk(CLOCK_50),
+        .data(alu_result),
 
-        .we(write_enable),
+        .src_addr1(src1),
+        .src_addr2(src2),
 
-        .wr_addr(write_addr),
+        .dst_addr(dst),
 
-        .wr_data(alu_result),
+        .we(we),
 
-        .rd_addr1(read_addr1),
-        .rd_addr2(read_addr2),
+        .clk(clk),
+        .rst(clear_reg),
 
-        .rd_data1(reg_a),
-        .rd_data2(reg_b)
+        .rdata1(reg_a),
+        .rdata2(reg_b)
 
     );
 
-    // ULA
+    // ALU
 
-    module_alu ALU (
-
-        .A(reg_a),
-
-        .B(reg_b),
+    module_alu ALU(
 
         .opcode(opcode),
+
+        .opA(reg_a),
+        .opB(reg_b),
+        .imm_ext(immediate), // Nova ligação para o valor imediato
 
         .result(alu_result)
 
@@ -87,18 +102,22 @@ module cpu_top(
 
     // LCD
 
-    lcd_controller_top LCD (
+    lcd_controller LCD(
 
-        .clk(CLOCK_50),
+        .clk(clk),
+        .rst(~KEY0),
+        .start_write(lcd_start), // Novo gatilho vindo da Control Unit
+
+        .opcode(opcode),
+        .src1(src1),
+        .src2(src2),
+        .dst_reg(dst),
 
         .result(alu_result),
 
         .LCD_DATA(LCD_DATA),
-
         .LCD_RS(LCD_RS),
-
         .LCD_RW(LCD_RW),
-
         .LCD_EN(LCD_EN)
 
     );
